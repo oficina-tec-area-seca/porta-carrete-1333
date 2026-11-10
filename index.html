@@ -204,62 +204,69 @@ es('ES00002','Tramo superior · 16 huellas · del descanso intermedio al descans
 
 /* --- Parrillas panel a panel (hoja 62). Cantidades y pesos: lista general de elementos. Ubicación de cada panel: zona según la flecha de su etiqueta; dentro de la zona, el orden es aproximado. --- */
 var GZ=[
- ['Descanso superior',XD0,YD,XD1,YE1,2,['GR00007','GR00001','GR00021','GR00012']],
+ ['Descanso superior',XD0,YD,XD1,A,2,['GR00007','GR00001','GR00021','GR00012']],
  ['Descanso superior · llegada de la escalera',XD1,YD,2.08,-1.1,1,['GR00059']],
  ['Fila A · extremo eje 1',XL,A,1.249,YG1,2,['GR00022','GR00013']],
- ['Fila A · borde exterior',1.284,YE1,13.033,A,0,['GR00008','GR00008','GR00008','GR00008','GR00008','GR00058','GR00008','GR00008','GR00008','GR00008','GR00008','GR00008']],
- ['Fila A · pasillo',1.284,A,13.033,YG1,0,['GR00010','GR00011','GR00010','GR00010','GR00014','GR00052','GR00015','GR00017','GR00016','GR00010','GR00010','GR00009']],
+ ['Fila A · borde exterior',1.284,YE1,13.033,A,0,['GR00008','GR00011','GR00008','GR00008','GR00008','GR00008','GR00008','GR00008','GR00008','GR00008','GR00008','GR00008']],
+ ['Fila A · pasillo',1.284,A,13.033,YG1,0,['GR00010','GR00010','GR00010','GR00010','GR00014','GR00015','GR00017','GR00052','GR00016','GR00010','GR00058','GR00009']],
  ['Fila A · extremo eje 3',13.043,A,XR,YG1,2,['GR00035','GR00020','GR00030','GR00018','GR00019']],
  ['Marco central eje 1',XL,YG1+0.15,1.249,YG2,2,['GR00023','GR00024','GR00026','GR00027','GR00029']],
- ['Marco central eje 2',5.25,YG1+0.15,8.15,YG2,2,['GR00057','GR00051','GR00053','GR00054']],
- ['Marco central eje 3',11.95,YG1+0.15,XR,YG2,2,['GR00025','GR00025','GR00031','GR00025','GR00032','GR00025','GR00034']],
- ['Fila B · pasillo interior',XL,YG2,XR,B,0,['GR00028','GR00028','GR00038','GR00040','GR00039','GR00042','GR00043','GR00045','GR00044','GR00046','GR00047','GR00047','GR00048','GR00050','GR00033']],
- ['Fila B · borde exterior',XD0,B,13.076,YE2,0,['GR00037','GR00037','GR00055','GR00056','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00004','GR00003','GR00002','GR00041','GR00041','GR00041','GR00049']],
+ ['Marco central eje 2',5.25,YG1+0.15,8.15,YG2,2,['GR00053','GR00054','GR00057','GR00051']],
+ ['Marco central eje 3',11.95,YG1+0.15,XR,YG2,2,['GR00025','GR00025','GR00025','GR00025','GR00031','GR00032',null,'GR00034']],
+ ['Fila B · pasillo interior',XL,YG2,XR,B,0,['GR00028','GR00028','GR00042','GR00038','GR00043','GR00040','GR00039',null,'GR00045','GR00044','GR00046','GR00047','GR00047','GR00050','GR00048','GR00033']],
+ ['Fila B · borde exterior',XD0,B,13.076,YE2,0,['GR00037','GR00037','GR00055','GR00056','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00004','GR00041','GR00003','GR00041','GR00002','GR00041','GR00049']],
  ['Descanso intermedio de la escalera',5.625,-2.1,7.25,-1.1,0,['GR00005','GR00006'],2.787]];
 var CELLS_A=[[1.284,2.221]];for(var i=0;i<10;i++)CELLS_A.push([2.231+1.005*i,3.226+1.005*i]);CELLS_A.push([12.277,13.033]);
 var NPAR={},GRUSO={};
-GZ.forEach(function(z){var n=z[6].length,cols=z[5]||n,rows=Math.ceil(n/cols),seen={};
-  z[6].forEach(function(mk,i){var c=i%cols,r=Math.floor(i/cols),x1,x2,gap=0.01;
+GZ.forEach(function(z){var n=z[6].length,nn=z[6].filter(Boolean).length,cols=z[5]||n,rows=Math.ceil(n/cols),seen={};
+  z[6].forEach(function(mk,i){if(!mk)return;var c=i%cols,r=Math.floor(i/cols),x1,x2,gap=0.01;
     if(/^Fila A · (borde|pasillo)/.test(z[0])){x1=CELLS_A[i][0];x2=CELLS_A[i][1]}
     else{var w=(z[3]-z[1])/cols;x1=z[1]+c*w+gap/2;x2=z[1]+(c+1)*w-gap/2}
     var h=(z[4]-z[2])/rows,y1=z[2]+r*h+gap/2,y2=z[2]+(r+1)*h-gap/2,zz=z[7]||T;
     GRUSO[mk]=(GRUSO[mk]||0)+1;var k=GRUSO[mk],q=(WT[mk]||[1])[0],id=q>1?mk+' #'+k:mk;
-    var w=WT[mk];P(id,'par','Parrilla aserrada 19-W-4 · PL32 · '+(q>1?q+' iguales en la lista':'1 en la lista'),z[0]+' · panel '+(i+1)+' de '+n+' · '+EL(zz),[{k:'p',a:[x1,y1,zz],b:[x2,y2,zz]}],w?w[1]/q:0,true)})});
+    var w=WT[mk];P(id,'par','Parrilla aserrada 19-W-4 · PL32 · '+(q>1?q+' iguales en la lista':'1 en la lista'),z[0]+' · '+nn+' paneles en esta zona · '+EL(zz),[{k:'p',a:[x1,y1,zz],b:[x2,y2,zz]}],w?w[1]/q:0,true)})});
 
 /* --- Barandas CHS48.3x3.68 y tubos desmontables SP CHS60.3x3.91 (hoja 63 · planta distribución pasamanos; escaleras en hoja 61) --- */
 function ba(id,ubic,a,b,perf){var mk=id.split(' ')[0],w=WT[mk];P(id,/^SP/.test(mk)?'sp':'bar',perf||'CHS48.3x3.68',ubic,[{k:'h',a:a,b:b}],w?w[1]/Math.max(w[0],1):0,true)}
 var F=T+0.03,X3B=13.076;
-/* fila A */
-ba('BA00012','Fila A · extremo eje 1 (996 mm)',[XL,A,F],[-0.195,A,F]);
+/* fila A (lado del descanso) */
+ba('BA00012','Fila A · extremo eje 1 (996 mm)',[XL,A,F],[XD0,A,F]);
 ba('BA00007','Descanso superior · costado eje 1',[XD0,A,F],[XD0,YD,F]);
 ba('BA00002','Descanso superior · borde exterior',[XD0,YD,F],[XD1,YD,F]);
 ba('BA00006','Borde fila A · junto al descanso (1031 mm)',[1.405,YE1,F],[2.436,YE1,F]);
 ba('BA00004','Borde fila A · tramo de 3590 mm',[2.446,YE1,F],[6.036,YE1,F]);
 ba('BA00003','Borde fila A · tramo de 3590 mm',[6.046,YE1,F],[9.636,YE1,F]);
 ba('BA00005','Borde fila A · tramo de 3409 mm hasta eje 3',[9.646,YE1,F],[13.055,YE1,F]);
-ba('BA00024','Fila A · extremo eje 3 (1102 mm) · sin etiqueta en la hoja 63, ubicado por descarte',[13.09,A,F],[XR,A,F]);
+P('BA00008','bar','CHS48.3x3.68','Esquina fila A · extremo eje 3: retorno de 681 mm y tramo de 1102 mm',[{k:'h',a:[13.055,YE1,F],b:[13.055,A,F]},{k:'h',a:[13.065,A,F],b:[XR,A,F]}],WT.BA00008[1],true);
 /* fila B */
-ba('BA00013','Fila B · extremo eje 1 (996 mm)',[XL,B,F],[-0.195,B,F]);
-ba('BA00018','Fila B · retorno en el extremo eje 1',[XD0,B,F],[XD0,YE2,F]);
-ba('BA00010','Borde fila B · tramo junto a eje 1',[XD0,YE2,F],[1.0,YE2,F]);
-ba('BA00021','Borde fila B · tramo de 3590 mm · sin etiqueta en la hoja 63, ubicado por peso',[1.01,YE2,F],[4.6,YE2,F]);
-ba('BA00022','Borde fila B · tramo de 3590 mm · sin etiqueta en la hoja 63, ubicado por peso',[4.61,YE2,F],[8.2,YE2,F]);
-ba('BA00023','Borde fila B · tramo de 3590 mm · sin etiqueta en la hoja 63, ubicado por peso',[8.21,YE2,F],[11.8,YE2,F]);
-ba('BA00009','Borde fila B · tramo junto a eje 3',[11.81,YE2,F],[X3B,YE2,F]);
-ba('BA00017','Fila B · retorno en el extremo eje 3',[X3B,YE2,F],[X3B,B,F]);
-ba('BA00011','Fila B · extremo eje 3 (996 mm)',[13.09,B,F],[XR,B,F]);
-/* vanos por donde pasa el carrete */
-var YM=(YG1+YG2)/2;
-ba('BA00014','Vano 1–2 · costado del marco eje 1, mitad A',[1.249,YG1+0.15,F],[1.249,YM,F]);
-ba('BA00016 #1','Vano 1–2 · costado del marco eje 2, mitad A',[5.25,YG1+0.15,F],[5.25,YM,F]);
-ba('BA00016 #2','Vano 1–2 · costado del marco eje 2, mitad B',[5.25,YM,F],[5.25,YG2,F]);
-ba('BA00016 #3','Vano 2–3 · costado del marco eje 2, mitad A',[8.15,YG1+0.15,F],[8.15,YM,F]);
-ba('BA00016 #4','Vano 2–3 · costado del marco eje 2, mitad B',[8.15,YM,F],[8.15,YG2,F]);
-ba('BA00008','Vano 2–3 · costado del marco eje 3, mitad A',[11.95,YG1+0.15,F],[11.95,YM,F]);
-ba('BA00015','Vano 2–3 · costado del marco eje 3, mitad B',[11.95,YM,F],[11.95,YG2,F]);
-[['SP00001',1.249,3.25,YG1+0.15],['SP00002',3.25,5.25,YG1+0.15],['SP00003',1.249,3.25,YG2],['SP00004',3.25,5.25,YG2],
- ['SP00005',8.15,10.05,YG1+0.15],['SP00006',10.05,11.95,YG1+0.15],['SP00007',8.15,10.05,YG2],['SP00008',10.05,11.95,YG2]].forEach(function(s){
-  ba(s[0],'Tubo desmontable sobre la viga maestra · cierra el vano por donde pasa el carrete',[s[1],s[3],F],[s[2],s[3],F],'CHS60.3x3.91')});
+ba('BA00013','Fila B · extremo eje 1 (996 mm)',[XL,B,F],[XD0,B,F]);
+ba('BA00010','Fila B · retorno junto al extremo eje 1 (1269 mm)',[XD0,B,F],[XD0,YE2,F]);
+ba('BA00024','Borde fila B · primer tramo junto a eje 1 · ubicado con la hoja 63 del CV-1332',[XD0,YE2,F],[2.09,YE2,F]);
+ba('BA00023','Borde fila B · tramo de 3590 mm · ubicado con la hoja 63 del CV-1332',[2.10,YE2,F],[5.69,YE2,F]);
+ba('BA00022','Borde fila B · tramo de 3590 mm · ubicado con la hoja 63 del CV-1332',[5.70,YE2,F],[9.29,YE2,F]);
+ba('BA00021','Borde fila B · último tramo hasta eje 3 · ubicado con la hoja 63 del CV-1332',[9.30,YE2,F],[X3B,YE2,F]);
+ba('BA00009','Fila B · retorno junto al extremo eje 3 (1269 mm)',[X3B,YE2,F],[X3B,B,F]);
+ba('BA00011','Fila B · extremo eje 3 (1102 mm)',[X3B,B,F],[XR,B,F]);
+/* costados de la plataforma: extremos eje 1 y eje 3, de la fila A a la fila B, en paños de 1259 · 1590 · 1590 · 853 (eje 1) y 1241 · 1590 · 1590 · 963 (eje 3).
+   En los dos paños centrales van los tubos desmontables SP (CHS60.3), que se sacan para entrar el carrete por el extremo. */
+var P1=[A,1.259],P2=[1.269,2.859],P3=[2.869,4.459],P4=[4.469,B],Q1=[A,1.241],Q2=[1.251,2.841],Q3=[2.851,4.441],Q4=[4.451,B];
+ba('BA00014','Costado eje 1 · paño junto a la fila A (1259 mm)',[XL,P1[0],F],[XL,P1[1],F]);
+ba('BA00016 #1','Costado eje 1 · primer paño central (1590 mm) · lleva los tubos SP',[XL,P2[0],F],[XL,P2[1],F]);
+ba('BA00016 #2','Costado eje 1 · segundo paño central (1590 mm) · lleva los tubos SP',[XL,P3[0],F],[XL,P3[1],F]);
+ba('BA00018','Costado eje 1 · paño junto a la fila B (853 mm)',[XL,P4[0],F],[XL,P4[1],F]);
+ba('BA00015','Costado eje 3 · paño junto a la fila A (1241 mm)',[XR,Q1[0],F],[XR,Q1[1],F]);
+ba('BA00016 #3','Costado eje 3 · primer paño central (1590 mm) · lleva los tubos SP',[XR,Q2[0],F],[XR,Q2[1],F]);
+ba('BA00016 #4','Costado eje 3 · segundo paño central (1590 mm) · lleva los tubos SP',[XR,Q3[0],F],[XR,Q3[1],F]);
+ba('BA00017','Costado eje 3 · paño junto a la fila B (963 mm)',[XR,Q4[0],F],[XR,Q4[1],F]);
+function sp(id,ubic,x,y1,y2,h){var w=WT[id];P(id,'sp','CHS60.3x3.91',ubic,[m('CHS60',x+0.06,y1+0.05,F+h,x+0.06,y2-0.05,F+h)],w?w[1]/w[0]:0,true)}
+sp('SP00001','Costado eje 1 · primer paño central · tubo superior',XL,P2[0],P2[1],1.24);
+sp('SP00002','Costado eje 1 · primer paño central · tubo intermedio',XL,P2[0],P2[1],0.79);
+sp('SP00003','Costado eje 1 · segundo paño central · tubo superior',XL,P3[0],P3[1],1.24);
+sp('SP00004','Costado eje 1 · segundo paño central · tubo intermedio',XL,P3[0],P3[1],0.79);
+sp('SP00005','Costado eje 3 · primer paño central · tubo superior',XR-0.12,Q2[0],Q2[1],1.24);
+sp('SP00006','Costado eje 3 · primer paño central · tubo intermedio',XR-0.12,Q2[0],Q2[1],0.79);
+sp('SP00007','Costado eje 3 · segundo paño central · tubo superior',XR-0.12,Q3[0],Q3[1],1.24);
+sp('SP00008','Costado eje 3 · segundo paño central · tubo intermedio',XR-0.12,Q3[0],Q3[1],0.79);
 /* escaleras */
 ba('BA00001','Escalera ES00002 · lado plataforma',[5.625,YS+0.5,2.968],[1.625,YS+0.5,6.045]);
 ba('BA00020','Escalera ES00002 · lado exterior',[5.625,YS-0.5,2.968],[1.4,YS-0.5,6.045]);
@@ -270,7 +277,7 @@ ba('BA00019 #2','Escalera ES00001 y descanso intermedio · lado exterior',[10.75
 PIECES.forEach(function(p){var w=WT[p.marca];if(w&&!/bar|par/.test(p.tipo))p.kg=w[1]/Math.max(INST[p.marca],1)});
 var OWN={},CNW={},NSTAT={nodos:0,sinUbicar:[]};
 var NO_MODELADAS='Placas de conexión CN00001 a CN00008 y PL00001, pernos y las placas base.';
-var NOTA='Cantidades y pesos: lista general de elementos del plano (hoja 1A). Parrillas: 88 paneles uno a uno (hoja 62); cada uno está en la zona que indica su etiqueta, pero el orden dentro de la zona es aproximado. Barandas: 28 tramos (hoja 63 y escaleras en hoja 61); BA00021, BA00022, BA00023 y BA00024 no tienen etiqueta en la hoja 63 y van ubicadas por peso. Módulos MO: qué vigas trae cada uno está interpretado desde la planta y las secciones. Sin modelar: '+NO_MODELADAS;
+var NOTA='Cantidades y pesos: lista general de elementos del plano (hoja 1A). Parrillas: 88 paneles uno a uno (hoja 62); cada uno está en la zona que indica su etiqueta, pero el orden dentro de la zona es aproximado. Barandas: 28 tramos (hoja 63 y escaleras en hoja 61), incluidos los costados de los extremos eje 1 y eje 3; los tubos SP van en los dos paños centrales de cada costado. BA00021, BA00022, BA00023 y BA00024 no tienen etiqueta en la hoja 63 del CV-1333; su orden se tomó de la hoja 63 del CV-1332, que es la misma estructura en espejo. Módulos MO: qué vigas trae cada uno está interpretado desde la planta y las secciones. Sin modelar: '+NO_MODELADAS;
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
