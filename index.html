@@ -69,6 +69,11 @@ input[type=search]{width:100%;background:var(--bg);border:1px solid var(--line);
 textarea{width:100%;min-height:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:4px;font-family:var(--f-mono);font-size:12px;padding:8px}
 .note{font-size:12.5px;color:var(--muted);margin:8px 0 0;max-width:65ch}
 .toast{font-size:12.5px;color:var(--ok);align-self:center}
+.ct{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+.ct th,.ct td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}
+.ct th:first-child,.ct td:first-child{text-align:left}
+.ct th{font-weight:600;color:var(--muted);font-size:12px}
+.ct td.no{color:var(--missing);font-weight:600}
 .sec{font-family:var(--f-display);font-weight:600;font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:14px 0 5px}
 .per{font-family:var(--f-mono);font-size:12.5px;margin:0}
 ul.list.plain li{cursor:default}
@@ -101,7 +106,7 @@ details .per{margin-top:6px;line-height:1.7;overflow-wrap:anywhere}
   <section class="panel">
     <div class="tabs" role="tablist">
       <button role="tab" data-t="pieza" aria-selected="true">Pieza</button>
-      <button role="tab" data-t="falt" aria-selected="false">Faltantes<span class="n" id="tab-n"></span></button>
+      <button role="tab" data-t="falt" aria-selected="false">Conteo y faltantes<span class="n" id="tab-n"></span></button>
       <button role="tab" data-t="capas" aria-selected="false">Capas</button>
     </div>
     <div class="body" id="t-pieza"></div>
@@ -126,9 +131,9 @@ details .per{margin-top:6px;line-height:1.7;overflow-wrap:anywhere}
    Para registrar faltantes informados: agregar los id de pieza a FALTANTES_BASE y subir BASE_VERSION. */
 var BASE_VERSION = 1;
 var FALTANTES_BASE = [];
-var WT={"BA00001":[1,68.33],"BA00002":[1,35.86],"BA00003":[1,72.34],"BA00004":[1,72.34],"BA00005":[1,71.12],"BA00006":[1,30.97],"BA00007":[1,45.32],"BA00008":[1,47.82],"BA00010":[1,32.18],"BA00009":[1,32.67],"BA00011":[1,30.66],"BA00012":[1,30.59],"BA00013":[1,30.66],"BA00014":[1,34.97],"BA00015":[1,34.85],"BA00017":[1,29.4],"BA00018":[1,29.4],"BA00019":[2,124.76],"BA00021":[1,71.98],"BA00020":[1,67.45],"BA00022":[1,72.34],"CN00001":[32,163.98],"CN00002":[12,111.16],"CN00003":[24,77.81],"CN00004":[12,113.04],"CN00005":[12,510.38],"CN00007":[12,166.17],"CN00006":[24,453.67],"CN00008":[16,84.4],"CO00001":[1,897.63],"CO00002":[2,1770.61],"CO00003":[1,885.63],"DV00001":[4,316.1],"CO00004":[1,883.5],"DV00002":[2,355.8],"DV00003":[2,159.24],"DV00004":[2,354.58],"DV00005":[2,159.34],"ES00001":[1,704.54],"ES00002":[1,826.2],"GR00001":[1,41.31],"GR00002":[1,57.82],"GR00003":[1,58.35],"GR00004":[1,59.12],"GR00006":[1,80.21],"GR00005":[1,29.15],"GR00007":[1,39.62],"GR00008":[11,406.64],"GR00009":[1,65.23],"GR00010":[5,323.76],"GR00012":[1,61.51],"GR00011":[1,64.66],"GR00013":[1,46.31],"GR00014":[1,64.58],"GR00015":[1,60.72],"GR00016":[1,62.46],"GR00017":[1,57.27],"GR00018":[1,62.29],"GR00019":[1,28.07],"GR00020":[1,52.38],"GR00021":[1,37.92],"GR00022":[1,45.39],"GR00024":[1,69.63],"GR00023":[1,54.9],"GR00025":[4,149.96],"GR00026":[1,62.95],"GR00028":[2,48.77],"GR00027":[1,69.43],"GR00029":[1,54.9],"GR00030":[1,44.66],"GR00031":[1,48.82],"GR00032":[1,40.59],"GR00033":[1,31.38],"GR00034":[1,51.97],"GR00035":[1,53.94],"GR00036":[8,474.03],"GR00037":[2,83.97],"GR00038":[1,31.27],"GR00039":[1,42.11],"GR00040":[1,31.29],"GR00041":[3,132.47],"GR00042":[1,43.63],"GR00043":[1,39.62],"GR00044":[1,42.26],"GR00045":[1,37.25],"GR00046":[1,41.05],"GR00047":[2,56.36],"GR00048":[1,32.08],"GR00049":[1,37.34],"GR00050":[1,29.28],"GR00051":[1,86.34],"GR00052":[1,52.55],"GR00053":[1,86.34],"GR00054":[1,52.55],"GR00055":[1,65.07],"GR00056":[1,37.68],"GR00057":[1,65.07],"GR00058":[1,37.68],"GR00059":[1,37.71],"MO00001":[1,6389.89],"MO00002":[1,621.96],"MO00003":[1,6050.98],"MO00004":[1,590.38],"MO00005":[1,1110.42],"MO00006":[1,638.81],"PL00001":[24,7.22]};
+var WT={"BA00001":[1,68.33],"BA00002":[1,35.86],"BA00003":[1,72.34],"BA00004":[1,72.34],"BA00005":[1,71.12],"BA00006":[1,30.97],"BA00007":[1,45.32],"BA00008":[1,47.82],"BA00009":[1,32.67],"BA00010":[1,32.18],"BA00011":[1,30.66],"BA00012":[1,30.59],"BA00013":[1,30.66],"BA00014":[1,34.97],"BA00015":[1,34.85],"BA00016":[4,137.76],"BA00017":[1,29.4],"BA00018":[1,29.4],"BA00019":[2,124.76],"BA00020":[1,67.45],"BA00021":[1,71.98],"BA00022":[1,72.34],"BA00023":[1,72.34],"BA00024":[1,29.15],"CN00001":[32,163.98],"CN00002":[12,111.16],"CN00003":[24,77.81],"CN00004":[12,113.04],"CN00005":[12,510.38],"CN00006":[24,453.67],"CN00007":[12,166.17],"CN00008":[16,84.4],"CO00001":[1,897.63],"CO00002":[2,1770.61],"CO00003":[1,885.63],"CO00004":[1,883.5],"DV00001":[4,316.1],"DV00002":[2,355.8],"DV00003":[2,159.24],"DV00004":[2,354.58],"DV00005":[2,159.34],"ES00001":[1,704.54],"ES00002":[1,826.2],"GR00001":[1,41.31],"GR00002":[1,57.82],"GR00003":[1,58.35],"GR00004":[1,59.12],"GR00005":[1,29.15],"GR00006":[1,80.21],"GR00007":[1,39.62],"GR00008":[11,406.64],"GR00009":[1,65.23],"GR00010":[5,323.76],"GR00011":[1,64.66],"GR00012":[1,61.51],"GR00013":[1,46.31],"GR00014":[1,64.58],"GR00015":[1,60.72],"GR00016":[1,62.46],"GR00017":[1,57.27],"GR00018":[1,62.29],"GR00019":[1,28.07],"GR00020":[1,52.38],"GR00021":[1,37.92],"GR00022":[1,45.39],"GR00023":[1,54.9],"GR00024":[1,69.63],"GR00025":[4,149.96],"GR00026":[1,62.95],"GR00027":[1,69.43],"GR00028":[2,48.77],"GR00029":[1,54.9],"GR00030":[1,44.66],"GR00031":[1,48.82],"GR00032":[1,40.59],"GR00033":[1,31.38],"GR00034":[1,51.97],"GR00035":[1,53.94],"GR00036":[8,474.03],"GR00037":[2,83.97],"GR00038":[1,31.27],"GR00039":[1,42.11],"GR00040":[1,31.29],"GR00041":[3,132.47],"GR00042":[1,43.63],"GR00043":[1,39.62],"GR00044":[1,42.26],"GR00045":[1,37.25],"GR00046":[1,41.05],"GR00047":[2,56.36],"GR00048":[1,32.08],"GR00049":[1,37.34],"GR00050":[1,29.28],"GR00051":[1,86.34],"GR00052":[1,52.55],"GR00053":[1,86.34],"GR00054":[1,52.55],"GR00055":[1,65.07],"GR00056":[1,37.68],"GR00057":[1,65.07],"GR00058":[1,37.68],"GR00059":[1,37.71],"MO00002":[1,621.96],"MO00003":[1,6050.98],"MO00004":[1,590.38],"MO00005":[1,1110.42],"MO00006":[1,638.81],"PL00001":[24,7.22],"SP00001":[1,1.99],"SP00002":[1,1.99],"SP00003":[1,1.99],"SP00004":[1,1.99],"SP00005":[1,1.99],"SP00006":[1,1.99],"SP00007":[1,1.99],"SP00008":[1,1.99],"MO00001":[1,6389.89]};
 var A=0,B=5.35,X1=0,X2=6.5,X3=13,Z0=2246.65,TOS=6.013,ZS=3.5;
-var YG1=1.228,YG2=4.528,YE1=-0.67,YE2=6.55,XL=-1.1,XR=14.1;
+var YG1=1.228,YG2=4.528,YE1=-0.681,YE2=6.62,XL=-1.191,XR=14.191,XD0=-0.094,XD1=1.397,YD=-2.258;
 var CFG={key:'portacarrete-faltantes',titulo:'PORTA CARRETE (1251-CV-1333 · BELT PLATFORM)',
   axX:[['1',X1],['2',X2],['3',X3]],axY:[['A',A],['B',B]],axOff:[-3.4,-2.6],
   lev:[0,2.762,TOS],levPos:[-2.6,-3.2],tgt:[6.5,3,-2.2],rad:34,radPl:30,grid:[6.5,-0.02,-2.5]};
@@ -172,7 +177,7 @@ function fila(id,eje,ya,yg,ye,x0,extra){var s=(yg>ya)?1:-1,g=[];
   for(var i=0;i+1<Xs.length;i++){var a=i%2?Xs[i+1]:Xs[i],b=i%2?Xs[i]:Xs[i+1];        /* arriostre de planta en zigzag */
     g.push(m('L80',a,ya,T-0.1,b,yg,T-0.1),m('L80',a,ya,T-0.1,b,ye,T-0.1))}
   P(id,'mod','HUB500x450 + H440x300x11x18 + H300x150','Fila '+eje+' · columnas superiores de los ejes 1, 2 y 3, viga maestra y envigado del pasillo · '+EL(T),g.concat(extra||[]))}
-fila('MO00001','A',A,YG1,YE1,1.249,[by('H300x150',X1,-2.16,YE1,T),bx('[250x90',X1,1.249,-2.16,T),by('[250x90',1.249,-2.16,YE1,T),bx('[250x90',X1,1.249,YE1,T),m('L80',X1,-0.67,T-0.1,1.249,-2.16,T-0.1)]);
+fila('MO00001','A',A,YG1,YE1,1.249,[by('H300x150',X1,YD,YE1,T),bx('[250x90',XD0,XD1,YD,T),by('[250x90',XD1,YD,YE1,T),by('[250x90',XD0,YD,A,T),bx('[250x90',XD0,XD1,YE1,T),m('L80',X1,YE1,T-0.1,XD1,YD,T-0.1)]);
 fila('MO00003','B',B,YG2,YE2,X1);
 
 /* --- Módulos centrales: viga transversal entre vigas maestras + marco de piso --- */
@@ -197,58 +202,82 @@ function es(id,ubic,a,b){P(id,'esc','[250x90x9x13',ubic+' · '+EL(a[2])+' a '+EL
 es('ES00001','Tramo inferior · 14 huellas · del piso al descanso intermedio (eje 2)',[10.75,YS,0.072],[7.25,YS,2.787]);
 es('ES00002','Tramo superior · 16 huellas · del descanso intermedio al descanso superior (eje 1)',[5.625,YS,2.968],[1.625,YS,6.045]);
 
-/* --- Parrillas por zona (los 59 paneles GR van uno a uno en la lámina 62) --- */
-var ZG=[['GR · pasillo fila A','Pasillo fila A',XL,A,XR,YG1,T],['GR · borde fila A','Borde exterior fila A',X1,YE1,X3,A,T],
-  ['GR · pasillo fila B','Pasillo fila B',XL,YG2,XR,B,T],['GR · borde fila B','Borde exterior fila B',X1,B,X3,YE2,T],
-  ['GR · eje 1','Marco central eje 1',XL,YG1,1.249,YG2,T],['GR · eje 2','Marco central eje 2',5.25,YG1,8.15,YG2,T],['GR · eje 3','Marco central eje 3',11.95,YG1,XR,YG2,T],
-  ['GR · descanso superior','Descanso superior de la escalera (GR00001, GR00007, GR00021, GR00059)',X1,-2.16,1.249,YE1,T+0.03],
-  ['GR · descanso intermedio','Descanso intermedio de la escalera (GR00005, GR00006)',5.625,-2.1,7.25,-1.1,2.787]];
-var gkg=0,gar=0;Object.keys(WT).forEach(function(k){if(/^GR/.test(k))gkg+=WT[k][1]});
-ZG.forEach(function(g){gar+=(g[4]-g[2])*(g[5]-g[3])});
-ZG.forEach(function(g){P(g[0],'par','Parrilla aserrada 19-W-4 · PL32',g[1]+' · '+EL(g[6]),[{k:'p',a:[g[2],g[3],g[6]],b:[g[4],g[5],g[6]]}],gkg*(g[4]-g[2])*(g[5]-g[3])/gar,true)});
+/* --- Parrillas panel a panel (hoja 62). Cantidades y pesos: lista general de elementos. Ubicación de cada panel: zona según la flecha de su etiqueta; dentro de la zona, el orden es aproximado. --- */
+var GZ=[
+ ['Descanso superior',XD0,YD,XD1,YE1,2,['GR00007','GR00001','GR00021','GR00012']],
+ ['Descanso superior · llegada de la escalera',XD1,YD,2.08,-1.1,1,['GR00059']],
+ ['Fila A · extremo eje 1',XL,A,1.249,YG1,2,['GR00022','GR00013']],
+ ['Fila A · borde exterior',1.284,YE1,13.033,A,0,['GR00008','GR00008','GR00008','GR00008','GR00008','GR00058','GR00008','GR00008','GR00008','GR00008','GR00008','GR00008']],
+ ['Fila A · pasillo',1.284,A,13.033,YG1,0,['GR00010','GR00011','GR00010','GR00010','GR00014','GR00052','GR00015','GR00017','GR00016','GR00010','GR00010','GR00009']],
+ ['Fila A · extremo eje 3',13.043,A,XR,YG1,2,['GR00035','GR00020','GR00030','GR00018','GR00019']],
+ ['Marco central eje 1',XL,YG1+0.15,1.249,YG2,2,['GR00023','GR00024','GR00026','GR00027','GR00029']],
+ ['Marco central eje 2',5.25,YG1+0.15,8.15,YG2,2,['GR00057','GR00051','GR00053','GR00054']],
+ ['Marco central eje 3',11.95,YG1+0.15,XR,YG2,2,['GR00025','GR00025','GR00031','GR00025','GR00032','GR00025','GR00034']],
+ ['Fila B · pasillo interior',XL,YG2,XR,B,0,['GR00028','GR00028','GR00038','GR00040','GR00039','GR00042','GR00043','GR00045','GR00044','GR00046','GR00047','GR00047','GR00048','GR00050','GR00033']],
+ ['Fila B · borde exterior',XD0,B,13.076,YE2,0,['GR00037','GR00037','GR00055','GR00056','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00036','GR00004','GR00003','GR00002','GR00041','GR00041','GR00041','GR00049']],
+ ['Descanso intermedio de la escalera',5.625,-2.1,7.25,-1.1,0,['GR00005','GR00006'],2.787]];
+var CELLS_A=[[1.284,2.221]];for(var i=0;i<10;i++)CELLS_A.push([2.231+1.005*i,3.226+1.005*i]);CELLS_A.push([12.277,13.033]);
+var NPAR={},GRUSO={};
+GZ.forEach(function(z){var n=z[6].length,cols=z[5]||n,rows=Math.ceil(n/cols),seen={};
+  z[6].forEach(function(mk,i){var c=i%cols,r=Math.floor(i/cols),x1,x2,gap=0.01;
+    if(/^Fila A · (borde|pasillo)/.test(z[0])){x1=CELLS_A[i][0];x2=CELLS_A[i][1]}
+    else{var w=(z[3]-z[1])/cols;x1=z[1]+c*w+gap/2;x2=z[1]+(c+1)*w-gap/2}
+    var h=(z[4]-z[2])/rows,y1=z[2]+r*h+gap/2,y2=z[2]+(r+1)*h-gap/2,zz=z[7]||T;
+    GRUSO[mk]=(GRUSO[mk]||0)+1;var k=GRUSO[mk],q=(WT[mk]||[1])[0],id=q>1?mk+' #'+k:mk;
+    var w=WT[mk];P(id,'par','Parrilla aserrada 19-W-4 · PL32 · '+(q>1?q+' iguales en la lista':'1 en la lista'),z[0]+' · panel '+(i+1)+' de '+n+' · '+EL(zz),[{k:'p',a:[x1,y1,zz],b:[x2,y2,zz]}],w?w[1]/q:0,true)})});
 
-/* --- Barandas CHS48.3x3.68 (lámina 63) y tubos desmontables SP CHS60.3x3.91 --- */
-function ba(id,ubic,a,b,perf){var w=WT[id.split(' ')[0]];P(id,'bar',perf||'CHS48.3x3.68',ubic,[{k:'h',a:a,b:b}],w?w[1]/Math.max(w[0],1):0,true)}
-var F=T+0.03;
-ba('BA00002','Descanso superior · borde exterior',[X1,-2.16,F],[1.249,-2.16,F]);
-ba('BA00007','Descanso superior · costado eje 1',[X1,-2.16,F],[X1,-0.1,F]);
-ba('BA00012','Fila A · extremo eje 1',[XL,A,F],[X1,A,F]);
-ba('BA00006','Borde fila A · junto al descanso',[1.249,YE1,F],[2.25,YE1,F]);
-ba('BA00004','Borde fila A · tramo 1',[2.26,YE1,F],[5.85,YE1,F]);
-ba('BA00003','Borde fila A · tramo 2',[5.86,YE1,F],[9.45,YE1,F]);
-ba('BA00005','Borde fila A · tramo 3',[9.46,YE1,F],[12.87,YE1,F]);
-ba('BA00011','Fila A · extremo eje 3',[X3,YE1,F],[XR,A,F]);
-ba('BA00017','Extremo eje 3 · A a B',[XR,A,F],[XR,B,F]);
-ba('BA00018','Extremo eje 1 · A a B',[XL,A,F],[XL,B,F]);
-ba('BA00013','Fila B · extremo eje 1',[XL,B,F],[X1,YE2,F]);
-ba('BA00010','Borde fila B · ejes 1 a 2',[X1,YE2,F],[X2,YE2,F]);
-ba('BA00009 · borde B','Borde fila B · ejes 2 a 3',[X2,YE2,F],[X3,YE2,F]);
-ba('BA00009 · extremo','Fila B · extremo eje 3',[X3,YE2,F],[XR,B,F]);
-ba('BA00014','Vano 1–2 · costado del marco eje 1',[1.249,YG1,F],[1.249,YG2,F]);
-ba('BA00016 · vano 1–2','Vano 1–2 · costado del marco eje 2',[5.25,YG1,F],[5.25,YG2,F]);
-ba('BA00016 · vano 2–3','Vano 2–3 · costado del marco eje 2',[8.15,YG1,F],[8.15,YG2,F]);
-ba('BA00008','Vano 2–3 · costado del marco eje 3, mitad A',[11.95,YG1,F],[11.95,2.878,F]);
-ba('BA00015','Vano 2–3 · costado del marco eje 3, mitad B',[11.95,2.878,F],[11.95,YG2,F]);
-[['SP00001',1.249,3.25,YG1],['SP00002',3.25,5.25,YG1],['SP00003',1.249,3.25,YG2],['SP00004',3.25,5.25,YG2],
- ['SP00005',8.15,10.05,YG1],['SP00006',10.05,11.95,YG1],['SP00007',8.15,10.05,YG2],['SP00008',10.05,11.95,YG2]].forEach(function(s){
+/* --- Barandas CHS48.3x3.68 y tubos desmontables SP CHS60.3x3.91 (hoja 63 · planta distribución pasamanos; escaleras en hoja 61) --- */
+function ba(id,ubic,a,b,perf){var mk=id.split(' ')[0],w=WT[mk];P(id,/^SP/.test(mk)?'sp':'bar',perf||'CHS48.3x3.68',ubic,[{k:'h',a:a,b:b}],w?w[1]/Math.max(w[0],1):0,true)}
+var F=T+0.03,X3B=13.076;
+/* fila A */
+ba('BA00012','Fila A · extremo eje 1 (996 mm)',[XL,A,F],[-0.195,A,F]);
+ba('BA00007','Descanso superior · costado eje 1',[XD0,A,F],[XD0,YD,F]);
+ba('BA00002','Descanso superior · borde exterior',[XD0,YD,F],[XD1,YD,F]);
+ba('BA00006','Borde fila A · junto al descanso (1031 mm)',[1.405,YE1,F],[2.436,YE1,F]);
+ba('BA00004','Borde fila A · tramo de 3590 mm',[2.446,YE1,F],[6.036,YE1,F]);
+ba('BA00003','Borde fila A · tramo de 3590 mm',[6.046,YE1,F],[9.636,YE1,F]);
+ba('BA00005','Borde fila A · tramo de 3409 mm hasta eje 3',[9.646,YE1,F],[13.055,YE1,F]);
+ba('BA00024','Fila A · extremo eje 3 (1102 mm) · sin etiqueta en la hoja 63, ubicado por descarte',[13.09,A,F],[XR,A,F]);
+/* fila B */
+ba('BA00013','Fila B · extremo eje 1 (996 mm)',[XL,B,F],[-0.195,B,F]);
+ba('BA00018','Fila B · retorno en el extremo eje 1',[XD0,B,F],[XD0,YE2,F]);
+ba('BA00010','Borde fila B · tramo junto a eje 1',[XD0,YE2,F],[1.0,YE2,F]);
+ba('BA00021','Borde fila B · tramo de 3590 mm · sin etiqueta en la hoja 63, ubicado por peso',[1.01,YE2,F],[4.6,YE2,F]);
+ba('BA00022','Borde fila B · tramo de 3590 mm · sin etiqueta en la hoja 63, ubicado por peso',[4.61,YE2,F],[8.2,YE2,F]);
+ba('BA00023','Borde fila B · tramo de 3590 mm · sin etiqueta en la hoja 63, ubicado por peso',[8.21,YE2,F],[11.8,YE2,F]);
+ba('BA00009','Borde fila B · tramo junto a eje 3',[11.81,YE2,F],[X3B,YE2,F]);
+ba('BA00017','Fila B · retorno en el extremo eje 3',[X3B,YE2,F],[X3B,B,F]);
+ba('BA00011','Fila B · extremo eje 3 (996 mm)',[13.09,B,F],[XR,B,F]);
+/* vanos por donde pasa el carrete */
+var YM=(YG1+YG2)/2;
+ba('BA00014','Vano 1–2 · costado del marco eje 1, mitad A',[1.249,YG1+0.15,F],[1.249,YM,F]);
+ba('BA00016 #1','Vano 1–2 · costado del marco eje 2, mitad A',[5.25,YG1+0.15,F],[5.25,YM,F]);
+ba('BA00016 #2','Vano 1–2 · costado del marco eje 2, mitad B',[5.25,YM,F],[5.25,YG2,F]);
+ba('BA00016 #3','Vano 2–3 · costado del marco eje 2, mitad A',[8.15,YG1+0.15,F],[8.15,YM,F]);
+ba('BA00016 #4','Vano 2–3 · costado del marco eje 2, mitad B',[8.15,YM,F],[8.15,YG2,F]);
+ba('BA00008','Vano 2–3 · costado del marco eje 3, mitad A',[11.95,YG1+0.15,F],[11.95,YM,F]);
+ba('BA00015','Vano 2–3 · costado del marco eje 3, mitad B',[11.95,YM,F],[11.95,YG2,F]);
+[['SP00001',1.249,3.25,YG1+0.15],['SP00002',3.25,5.25,YG1+0.15],['SP00003',1.249,3.25,YG2],['SP00004',3.25,5.25,YG2],
+ ['SP00005',8.15,10.05,YG1+0.15],['SP00006',10.05,11.95,YG1+0.15],['SP00007',8.15,10.05,YG2],['SP00008',10.05,11.95,YG2]].forEach(function(s){
   ba(s[0],'Tubo desmontable sobre la viga maestra · cierra el vano por donde pasa el carrete',[s[1],s[3],F],[s[2],s[3],F],'CHS60.3x3.91')});
+/* escaleras */
 ba('BA00001','Escalera ES00002 · lado plataforma',[5.625,YS+0.5,2.968],[1.625,YS+0.5,6.045]);
-ba('BA00020','Escalera ES00002 · lado exterior',[5.625,YS-0.5,2.968],[1.249,YS-0.5,6.045]);
-ba('BA00019 · int','Escalera ES00001 · lado plataforma',[10.75,YS+0.5,0.072],[7.25,YS+0.5,2.787]);
-ba('BA00019 · ext','Escalera ES00001 y descanso intermedio · lado exterior',[10.75,YS-0.5,0.072],[7.25,YS-0.5,2.787]);
+ba('BA00020','Escalera ES00002 · lado exterior',[5.625,YS-0.5,2.968],[1.4,YS-0.5,6.045]);
+ba('BA00019 #1','Escalera ES00001 · lado plataforma',[10.75,YS+0.5,0.072],[7.25,YS+0.5,2.787]);
+ba('BA00019 #2','Escalera ES00001 y descanso intermedio · lado exterior',[10.75,YS-0.5,0.072],[7.25,YS-0.5,2.787]);
 
 /* --- pesos de lista: peso total de la marca repartido en sus piezas --- */
-PIECES.forEach(function(p){var w=WT[p.marca];if(w&&p.tipo!=='bar')p.kg=w[1]/Math.max(INST[p.marca],1)});
+PIECES.forEach(function(p){var w=WT[p.marca];if(w&&!/bar|par/.test(p.tipo))p.kg=w[1]/Math.max(INST[p.marca],1)});
 var OWN={},CNW={},NSTAT={nodos:0,sinUbicar:[]};
 var NO_MODELADAS='Placas de conexión CN00001 a CN00008 y PL00001, pernos y las placas base.';
-var NOTA='Módulos MO: el plano da un solo peso por módulo; qué vigas trae cada uno está interpretado desde la planta y las secciones. Parrillas: van por zona, no panel a panel. Barandas y tubos SP: tramo asignado por la posición de su etiqueta en la lámina 63. Altura del empalme de columnas y posición exacta de la escalera en el ancho: aproximadas. Sin modelar: '+NO_MODELADAS;
+var NOTA='Cantidades y pesos: lista general de elementos del plano (hoja 1A). Parrillas: 88 paneles uno a uno (hoja 62); cada uno está en la zona que indica su etiqueta, pero el orden dentro de la zona es aproximado. Barandas: 28 tramos (hoja 63 y escaleras en hoja 61); BA00021, BA00022, BA00023 y BA00024 no tienen etiqueta en la hoja 63 y van ubicadas por peso. Módulos MO: qué vigas trae cada uno está interpretado desde la planta y las secciones. Sin modelar: '+NO_MODELADAS;
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script id="app">
 (function(){
 var $=function(s){return document.querySelector(s)};
-var TIPOS={col:['Columnas',0x4f6b85],mod:['Módulos',0x5f7f9c],viga:['Vigas',0x7f96a8],arr:['Arriostramientos verticales',0xc79a2a],dh:['Arriostres de piso',0xb06a3a],esc:['Escaleras',0x6a8f6b],par:['Parrillas',0x9aa7b0],bar:['Barandas',0xd8b93a],nod:['Nodos de conexión',0x12a5b8]};
+var TIPOS={col:['Columnas',0x4f6b85],mod:['Módulos',0x5f7f9c],viga:['Vigas',0x7f96a8],arr:['Arriostramientos verticales',0xc79a2a],dh:['Arriostres de piso',0xb06a3a],esc:['Escaleras',0x6a8f6b],par:['Parrillas',0x9aa7b0],bar:['Barandas',0xd8b93a],sp:['Tubos desmontables SP',0xe08a2e],nod:['Nodos de conexión',0x12a5b8]};
 var MISS=0xe2402f, SEL=0x7a4a00;
 var byId={};PIECES.forEach(function(p){byId[p.id]=p});
 var NODOS=PIECES.filter(function(p){return p.tipo==='nod'}), nodesOf={};
@@ -276,7 +305,7 @@ function addMesh(piece,geo,pos,target,vertical){
   me.position.copy(pos);
   if(target){if(vertical)me.up.set(1,0,0);me.lookAt(target)}
   me.userData.pid=piece.id;
-  if(piece.tipo!=='bar'&&piece.tipo!=='nod'){var ed=new THREE.LineSegments(new THREE.EdgesGeometry(geo,30),piece.lmat);me.add(ed)}
+  if(!/^(bar|sp|nod)$/.test(piece.tipo)){var ed=new THREE.LineSegments(new THREE.EdgesGeometry(geo,30),piece.lmat);me.add(ed)}
   scene.add(me);meshes.push(me);piece.meshes.push(me)}
 function member(piece,a,b,w,h,round){
   var d=b.clone().sub(a),len=d.length();if(len<1e-4)return;
@@ -412,9 +441,12 @@ function listaTexto(){var all=PIECES.filter(function(p){return missing.has(p.id)
   var t=CFG.titulo+' — FALTANTES: '+a.length+' piezas, '+kg(tot)+'\n'+a.map(function(p){return '- '+p.id+' | '+TIPOS[p.tipo][0]+' | '+p.perfil+' | '+p.ubic+(p.kg?' | '+kg(p.kg):'')}).join('\n');
   if(n.length)t+='\nCONEXIONES PENDIENTES: '+n.length+' nodos\n'+n.map(function(p){return '- '+p.id+' | '+p.ubic+' | une '+p.nd.pz.join(', ')+(p.nd.pl.length?' | placas '+p.nd.pl.join(', '):'')+' | '+p.perfil}).join('\n');
   return t}
+function conteo(){var r={};PIECES.forEach(function(p){var t=r[p.tipo]=r[p.tipo]||{n:0,f:0,kg:0,mk:{}};t.n++;t.mk[p.marca]=1;if(missing.has(p.id)){t.f++;t.kg+=p.kg}});
+  return '<div class="sec" style="margin-top:0">Conteo de la estructura</div><table class="ct"><thead><tr><th>Tipo</th><th>Total</th><th>Marcas</th><th>Montadas</th><th>Faltan</th></tr></thead><tbody>'+
+    Object.keys(TIPOS).filter(function(k){return r[k]}).map(function(k){var t=r[k];return '<tr><td>'+TIPOS[k][0]+'</td><td>'+t.n+'</td><td>'+Object.keys(t.mk).length+'</td><td>'+(t.n-t.f)+'</td><td class="'+(t.f?'no':'')+'">'+t.f+'</td></tr>'}).join('')+'</tbody></table>'}
 function renderFalt(){var el=$('#t-falt'),a=PIECES.filter(function(p){return missing.has(p.id)});
-  if(!a.length){el.innerHTML='<p class="empty">Sin faltantes marcados. Haz clic en una pieza y usa «Marcar como faltante», </p>';return}
-  el.innerHTML='<div class="act" style="margin:0 0 6px"><button class="btn primary" id="cp">Copiar lista</button><button class="btn" id="cl">Limpiar todo</button><span class="toast" id="ts"></span></div>'+
+  if(!a.length){el.innerHTML=conteo()+'<p class="empty">Sin faltantes marcados. Haz clic en una pieza y usa «Marcar como faltante».</p>';return}
+  el.innerHTML=conteo()+'<div class="act" style="margin:12px 0 6px"><button class="btn primary" id="cp">Copiar lista</button><button class="btn" id="cl">Limpiar todo</button><span class="toast" id="ts"></span></div>'+
     '<ul class="list">'+a.map(function(p){return '<li data-id="'+esc(p.id)+'"><span class="marca">'+esc(p.id)+'</span><span class="kg">'+(p.tipo==='nod'?'nodo':kg(p.kg))+'</span><span class="d">'+esc(p.perfil)+' · '+esc(p.ubic)+'</span></li>'}).join('')+'</ul>'+
     '<textarea id="tx" readonly hidden></textarea>';
   el.querySelectorAll('li').forEach(function(li){li.addEventListener('click',function(){select(li.dataset.id)})});
@@ -430,7 +462,7 @@ function select(id,fromTap){selected=id;refresh();if(id)tab('pieza')}
 
 /* capas */
 var chips=$('#chips');Object.keys(TIPOS).filter(function(k){return PIECES.some(function(p){return p.tipo===k})}).forEach(function(k){var b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed','true');
-  b.innerHTML='<span class="sw" style="background:#'+('00000'+TIPOS[k][1].toString(16)).slice(-6)+'"></span>'+TIPOS[k][0];
+  b.innerHTML='<span class="sw" style="background:#'+('00000'+TIPOS[k][1].toString(16)).slice(-6)+'"></span>'+TIPOS[k][0]+' <b style="font-family:var(--f-mono);font-weight:500">'+PIECES.filter(function(p){return p.tipo===k}).length+'</b>';
   b.addEventListener('click',function(){if(hiddenTypes.has(k))hiddenTypes.delete(k);else hiddenTypes.add(k);b.setAttribute('aria-pressed',!hiddenTypes.has(k));paint()});chips.appendChild(b)});
 $('#cut').addEventListener('input',function(e){cut=+e.target.value;$('#cut-l').textContent=cut>=24?'todo':EL(cut);paint()});
 $('#dim').addEventListener('click',function(){dim=!dim;$('#dim').setAttribute('aria-pressed',dim);paint()});
